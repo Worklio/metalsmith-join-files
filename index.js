@@ -1,55 +1,73 @@
 'use strict'
 
-//const path = require('path');
+module.exports = function(options = {}) {
+  var sortBy = (options.sortBy||"").split(",");
+  console.log(sortBy);
 
-module.exports = (options = {}) => ((files, metalsmith, done) => {
-  
-  let directoryTree = {files:[]};
-
-  Object.keys(files).forEach(function(file){
-    let filePathWithouExt = file.substring(0, file.lastIndexOf('.'));
-    let path = filePathWithouExt.split('/');
-    let level = 0;
-    let target = directoryTree;
-
-    path.forEach(function(segment){
-      if(target.files[segment] === undefined){
-        target.files[segment] = {
-          files:[]
-        }
-      }
-      target = target.files[segment];
-      level++;
-    });
+  return ((files, metalsmith, done) => {
     
-    target.content = files[file];
+    let directoryTree = {files:[]};
 
-    delete files[file];
-  });
+    Object.keys(files).forEach(function(file){
+      let filePathWithouExt = file.substring(0, file.lastIndexOf('.'));
+      let path = filePathWithouExt.split('/');
+      let level = 0;
+      let target = directoryTree;
 
-  let orderedDirectoryTree = [];
-  let flat = (fileName, parent, target) => {
-    let file = parent[fileName];
-    let files = file.files;
+      path.forEach(function(segment){
+        if(target.files[segment] === undefined){
+          target.files[segment] = {
+            files:[]
+          }
+        }
+        target = target.files[segment];
+        level++;
+      });
+      
+      target.content = files[file];
 
-    let flatFile = file.content || {
-      title: fileName
+      delete files[file];
+    });
+
+    let orderedDirectoryTree = [];
+
+    let compare = (a, b) => {
+      var index = 0;
+      while (a[sortBy[index]]!=b[sortBy[index]] && index>sortBy.length-1) {
+        index++;
+      }
+
+      return a[sortBy[index]]==b[sortBy[index]] ? 0 : a[sortBy[index]]<b[sortBy[index]] ? -1 : 1;
     };
-    flatFile.files = [];
 
-    if(files)
-      Object.keys(files).forEach( (file) => { flat(file, files, flatFile.files) });
+    let flat = (fileName, parent, target) => {
+      let file = parent[fileName];
+      let files = file.files;
 
-    target.push(flatFile);
-  };
+      let flatFile = file.content || {
+        title: fileName
+      };
+      flatFile.files = [];
 
-  Object.keys(directoryTree.files).forEach((file) => { flat(file, directoryTree.files, orderedDirectoryTree) });
-  
+      if(files) {
+        Object.keys(files).forEach( (file) => { flat(file, files, flatFile.files) });
+        if(sortBy.length) 
+          flatFile.files.sort(compare);
+      }
 
-  files['index.html'] = {
-    files: orderedDirectoryTree,
-    contents: new Buffer("")
-  };
+      target.push(flatFile);
+    };
 
-  done();
-})
+
+
+    Object.keys(directoryTree.files).forEach((file) => { flat(file, directoryTree.files, orderedDirectoryTree) });
+    orderedDirectoryTree.sort(compare);
+
+    files['index.html'] = {
+      files: orderedDirectoryTree,
+      contents: new Buffer("")
+    };
+
+    done();
+  })
+}
