@@ -2,7 +2,6 @@
 
 module.exports = function(options = {}) {
   var sortBy = (options.sortBy||"").split(",");
-  console.log(sortBy);
 
   return ((files, metalsmith, done) => {
     
