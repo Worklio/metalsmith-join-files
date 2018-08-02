@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-join-files",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A metalsmith plugin to join all files in one",
   "main": "index.js",
   "repository": {
@@ -13,6 +13,5 @@
     "url": "https://github.com/worklio/metalsmith-join-files/issues"
   },
   "homepage": "https://github.com/worklio/metalsmith-join-files#readme",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
