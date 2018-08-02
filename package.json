@@ -14,7 +14,5 @@
   },
   "homepage": "https://github.com/worklio/metalsmith-join-files#readme",
   "dependencies": {
-    "lodash": "^4.17.4",
-    "minimatch": "^3.0.3"
   }
 }
