@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-join-files",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A metalsmith plugin to join all files in one",
   "main": "index.js",
   "repository": {
