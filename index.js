@@ -24,6 +24,7 @@ module.exports = function(options = {}) {
       });
       
       target.content = files[file];
+      target.content.fileName = file;
 
       delete files[file];
     });
