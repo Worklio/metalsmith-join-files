@@ -9,7 +9,7 @@ module.exports = function(options = {}) {
 
     Object.keys(files).forEach(function(file){
       let filePathWithouExt = file.substring(0, file.lastIndexOf('.'));
-      let path = filePathWithouExt.split('/');
+      let path = filePathWithouExt.split(/\/|\\|\\\\/);
       let level = 0;
       let target = directoryTree;
 
