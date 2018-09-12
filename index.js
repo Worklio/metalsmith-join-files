@@ -2,34 +2,46 @@
 
 module.exports = function(options = {}) {
   var sortBy = (options.sortBy||"").split(",");
+  var joinRoot = options.joinRoot === undefined ? true : options.joinRoot;
 
   return ((files, metalsmith, done) => {
     
-    let directoryTree = {files:[]};
+    let directoryTree = {};
 
     Object.keys(files).forEach(function(file){
       let filePathWithouExt = file.substring(0, file.lastIndexOf('.'));
       let path = filePathWithouExt.split(/\/|\\|\\\\/);
       let level = 0;
-      let target = directoryTree;
 
-      path.forEach(function(segment){
-        if(target.files[segment] === undefined){
-          target.files[segment] = {
-            files:[]
+      if(joinRoot || path.length > 1) {
+        let target;
+        if(joinRoot) 
+          target = directoryTree;
+
+        path.forEach(function(segment){
+          if(!joinRoot && level == 0) {
+            target = files[segment+'.html'];
+            level++;
+            return;
           }
-        }
-        target = target.files[segment];
-        level++;
-      });
+
+          if(target.files === undefined) target.files = [];
+
+          if(target.files[segment] === undefined){
+            target.files[segment] = {
+              files:[]
+            }
+          }
+          target = target.files[segment];
+          level++;
+        });
       
-      target.content = files[file];
-      target.content.fileName = file;
+        target.content = files[file];
+        target.content.fileName = file;
+        delete files[file];
+      }
 
-      delete files[file];
     });
-
-    let orderedDirectoryTree = [];
 
     let compare = (a, b) => {
       var index = 0;
@@ -59,14 +71,29 @@ module.exports = function(options = {}) {
     };
 
 
+    if(joinRoot) {
+      let orderedDirectoryTree = [];
 
-    Object.keys(directoryTree.files).forEach((file) => { flat(file, directoryTree.files, orderedDirectoryTree) });
-    orderedDirectoryTree.sort(compare);
+      Object.keys(directoryTree.files).forEach((file) => { flat(file, directoryTree.files, orderedDirectoryTree) });
+      orderedDirectoryTree.sort(compare);
+    
+      files['index.html'] = {
+        files: orderedDirectoryTree,
+        contents: new Buffer("")
+      };
+    }
+    else {
+      Object.keys(files).forEach(function(rootFileName){
+        let rootFile = files[rootFileName];
 
-    files['index.html'] = {
-      files: orderedDirectoryTree,
-      contents: new Buffer("")
-    };
+        let orderedDirectoryTree = [];
+        Object.keys(rootFile.files).forEach((file) => {flat(file, rootFile.files, orderedDirectoryTree) });
+        orderedDirectoryTree.sort(compare);
+
+        rootFile.files = orderedDirectoryTree;
+      })
+    }
+
 
     done();
   })

@@ -45,6 +45,10 @@ metalsmith.use(metalsmithJoinFiles({
 #### sortBy
 Coma separated list of metadata(s) according which will be sorted files in array
 
+#### joinRoot = true
+Join all files into one index.html file.
+
+If it is set to `false` root files will be not joined. In each root file will be created array `files` with joined files from folder with the same name as root file.
 
 
 [npm-image]: https://badge.fury.io/js/metalsmith-join-files.svg
