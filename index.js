@@ -6,7 +6,7 @@ module.exports = function(options = {}) {
 
   return ((files, metalsmith, done) => {
     
-    let directoryTree = {};
+    let directoryTree = {files:[]};
 
     Object.keys(files).forEach(function(file){
       let filePathWithouExt = file.substring(0, file.lastIndexOf('.'));
@@ -39,6 +39,9 @@ module.exports = function(options = {}) {
         target.content = files[file];
         target.content.fileName = file;
         delete files[file];
+      }
+      else {
+        if(files[file].files === undefined) files[file].files = [];
       }
 
     });
