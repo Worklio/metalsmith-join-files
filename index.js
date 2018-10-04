@@ -16,8 +16,6 @@ module.exports = function(options = {}) {
       let path = filePathWithouExt.split(/\/|\\|\\\\/);
       let level = 0;
 
-      console.log(file);
-
       if(joinRoot || path.length > 1) {
         let target;
         if(joinRoot) 
