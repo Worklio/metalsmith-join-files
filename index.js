@@ -54,7 +54,6 @@ module.exports = function(options = {}) {
 
       
         target.content = files[file];
-        console.log(target.content)
         target.content.fileName = file;
         delete files[file];
       }
