@@ -5,7 +5,7 @@ const nodePath = require('path');
 module.exports = function(options = {}) {
   var sortBy = (options.sortBy||"").split(",");
   var joinRoot = options.joinRoot === undefined ? true : options.joinRoot;
-  var rootFileName = options.rootFilename || "index.html";
+  var rootFileName = options.rootFileName || "index.html";
 
   return ((files, metalsmith, done) => {
     let directoryTree = {files:[]};
