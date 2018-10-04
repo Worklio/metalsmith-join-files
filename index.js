@@ -16,6 +16,8 @@ module.exports = function(options = {}) {
       let path = filePathWithouExt.split(/\/|\\|\\\\/);
       let level = 0;
 
+      console.log(file);
+
       if(joinRoot || path.length > 1) {
         let target;
         if(joinRoot) 
@@ -23,23 +25,38 @@ module.exports = function(options = {}) {
 
         path.forEach(function(segment){
           if(!joinRoot && level == 0) {
-            target = files[segment+ext];
+            let parentFileName = segment+ext;
+            target = files[parentFileName];
+
+            if(target === undefined) {
+              files[parentFileName] = {
+                contents: Buffer.from("", "utf8")
+              };
+              target = files[parentFileName];
+            }
+              
             level++;
             return;
           }
+
 
           if(target.files === undefined) target.files = [];
 
           if(target.files[segment] === undefined){
             target.files[segment] = {
-              files:[]
+              files:[],
+              content: {
+                contents: Buffer.from("", "utf8")
+              }
             }
           }
           target = target.files[segment];
           level++;
         });
+
       
         target.content = files[file];
+        console.log(target.content)
         target.content.fileName = file;
         delete files[file];
       }
@@ -85,7 +102,7 @@ module.exports = function(options = {}) {
     
       files[rootFileName] = {
         files: orderedDirectoryTree,
-        contents: new Buffer("")
+        contents: Buffer.from("", "utf8")
       };
     }
     else {
