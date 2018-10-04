@@ -2,6 +2,14 @@
 
 const nodePath = require('path');
 
+/**
+   * A metalsmith plugin to join all files in one file.
+   * @param {object} [options] - Options
+   * @param {string} [options.sortBy] - Coma separated list of metadata(s) according which will be sorted files in array
+   * @param {boolean} [options.joinRoot=true] - Join all files into one index.html file. If it is set to `false` root files will be not joined. In each root file will be created array `files` with joined files from folder with the same name as root file.
+   * @param {string} [options.rootFileName="index.html"] - Name of new file with joined all files.
+   **/
+
 module.exports = function(options = {}) {
   var sortBy = (options.sortBy||"").split(",");
   var joinRoot = options.joinRoot === undefined ? true : options.joinRoot;
