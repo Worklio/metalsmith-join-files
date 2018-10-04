@@ -1,14 +1,17 @@
 'use strict'
 
+const nodePath = require('path');
+
 module.exports = function(options = {}) {
   var sortBy = (options.sortBy||"").split(",");
   var joinRoot = options.joinRoot === undefined ? true : options.joinRoot;
+  var rootFileName = options.rootFilename || "index.html";
 
   return ((files, metalsmith, done) => {
-    
     let directoryTree = {files:[]};
 
     Object.keys(files).forEach(function(file){
+      let ext = nodePath.extname(file);
       let filePathWithouExt = file.substring(0, file.lastIndexOf('.'));
       let path = filePathWithouExt.split(/\/|\\|\\\\/);
       let level = 0;
@@ -20,7 +23,7 @@ module.exports = function(options = {}) {
 
         path.forEach(function(segment){
           if(!joinRoot && level == 0) {
-            target = files[segment+'.html'];
+            target = files[segment+ext];
             level++;
             return;
           }
@@ -80,7 +83,7 @@ module.exports = function(options = {}) {
       Object.keys(directoryTree.files).forEach((file) => { flat(file, directoryTree.files, orderedDirectoryTree) });
       orderedDirectoryTree.sort(compare);
     
-      files['index.html'] = {
+      files[rootFileName] = {
         files: orderedDirectoryTree,
         contents: new Buffer("")
       };

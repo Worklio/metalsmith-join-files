@@ -50,6 +50,9 @@ Join all files into one index.html file.
 
 If it is set to `false` root files will be not joined. In each root file will be created array `files` with joined files from folder with the same name as root file.
 
+#### rootFileName = "index.html"
+Name of new file with joined all files.
+
 
 [npm-image]: https://badge.fury.io/js/metalsmith-join-files.svg
 [npm-url]: https://npmjs.org/package/metalsmith-join-files
